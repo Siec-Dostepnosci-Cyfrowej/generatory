@@ -26,6 +26,8 @@ const GENERATORY = [
   { label: "Word na Markdown",         href: "/generator-docx-markdown",   internal: true },
 ]
 
+const SLOWNIK_URL = `${BASE}/slownik`
+
 function Dropdown({ label, items }: { label: string; items: { label: string; href: string }[] }) {
   const [open, setOpen] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
@@ -164,6 +166,10 @@ export function AppLayout({ children, title, description }: AppLayoutProps) {
             </a>
             <Dropdown label="Wymiary" items={WYMIARY} />
             <Dropdown label="Generatory" items={GENERATORY} />
+            <a href={SLOWNIK_URL}
+              className="text-sm text-foreground hover:text-[#280449] dark:hover:text-[#E2C7F4] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1 py-1">
+              Słownik
+            </a>
             <a href={`${BASE}/blog`}
               className="text-sm text-foreground hover:text-[#280449] dark:hover:text-[#E2C7F4] transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded px-1 py-1">
               Blog
@@ -225,6 +231,12 @@ export function AppLayout({ children, title, description }: AppLayoutProps) {
                     </li>
                   ))}
                 </ul>
+              </li>
+              <li>
+                <a href={SLOWNIK_URL} onClick={() => setMobileOpen(false)}
+                  className="block py-2 text-sm text-foreground hover:text-primary">
+                  Słownik
+                </a>
               </li>
               <li>
                 <a href={`${BASE}/blog`} onClick={() => setMobileOpen(false)}
