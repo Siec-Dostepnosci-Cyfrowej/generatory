@@ -8,7 +8,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 
 const BASE = "https://siec-dostepnosci-cyfrowej.github.io/sdc"
-const APP_URL = "https://wojsmol.github.io/sdc-generatory"
+const APP_URL = "https://siec-dostepnosci-cyfrowej.github.io/generatory"
 
 const WYMIARY = [
   { label: "Komunikacja",           href: `${BASE}/docs/komunikacja/wymiar-komunikacja/o-wymiarze-komunikacja` },
