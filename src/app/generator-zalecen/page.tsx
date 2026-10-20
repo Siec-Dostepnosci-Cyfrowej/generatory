@@ -29,15 +29,12 @@ function formatDate(date: Date): string {
   }) + " r."
 }
 
-function keywordsToArray(text: string): string[] {
-  return text.split(/[\n,]+/).map(k => k.trim()).filter(Boolean)
-}
 
 const schema = z.object({
   title: z.string().min(1, "Tytuł jest wymagany."),
   sidebar_label: z.string(),
   description: z.string(),
-  keywords: z.string(),
+  tags: z.string().min(1, "Tagi są wymagane."),
   cel: z.string().min(1, "Cel zalecenia jest wymagany."),
   zalecenie: z.string().min(1, "Treść zalecenia jest wymagana."),
   rekomendacje: z.string(),
@@ -55,17 +52,21 @@ type FormValues = z.infer<typeof schema>
 const today = formatDate(new Date())
 
 const defaultValues: FormValues = {
-  title: "", sidebar_label: "", description: "", keywords: "", cel: "", zalecenie: "",
+  title: "", sidebar_label: "", description: "", tags: "", cel: "", zalecenie: "",
   rekomendacje: "", uzasadnienie: "", podstawyPrawne: "",
   zrodla: "", powiazania: "", autor: "",
   wspolpraca: "", data_zgloszenia: today,
 }
 
+function tagsToArray(text: string): string[] {
+  return text.split(/[\n,]+/).map(t => t.trim()).filter(Boolean)
+}
+
 function generateMdx(form: FormValues, files: File[]) {
   const id = generateId(form.title || "zalecenie")
   const heading = "Zalecenie"
-  const kw = keywordsToArray(form.keywords)
-  const kwInline = kw.length ? `[${kw.join(",")}]` : "[dostępność cyfrowa]"
+  const tags = tagsToArray(form.tags)
+  const tagsInline = `[${tags.join(", ")}]`
 
   return `---
 id: ${id}
@@ -73,8 +74,7 @@ title: ${form.title}
 description: ${form.description}
 sidebar_label: ${form.sidebar_label || form.title}
 sidebar_position: 0
-keywords: ${kwInline}
-tags: ${kwInline}
+tags: ${tagsInline}
 opracowanie: ${form.autor}
 wspolpraca: ${form.wspolpraca}
 data_zgloszenia: ${form.data_zgloszenia}
@@ -205,7 +205,7 @@ export default function GeneratorZalecen() {
 
                   <FormField control={form.control} name="sidebar_label" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Krótki tytuł</FormLabel>
+                      <FormLabel>Zwięzły tytuł</FormLabel>
                       <FormDescription>Etykieta w menu bocznym (sidebar_label). Jeśli puste, użyty zostanie tytuł.</FormDescription>
                       <FormControl><Input autoComplete="off" {...field} /></FormControl>
                     </FormItem>
@@ -219,17 +219,17 @@ export default function GeneratorZalecen() {
                     </FormItem>
                   )} />
 
-
-
-                  <FormField control={form.control} name="keywords" render={({ field }) => (
+                  <FormField control={form.control} name="tags" render={({ field }) => (
                     <FormItem>
-                      <FormLabel>Słowa kluczowe</FormLabel>
-                      <FormDescription>Wpisz słowa oddzielone przecinkami lub każde w nowej linii. Zostaną użyte jako keywords i tags.</FormDescription>
+                      <FormLabel>Tagi <span aria-hidden="true">*</span><span className="sr-only">(wymagane)</span></FormLabel>
+                      <FormDescription>Wpisz tagi oddzielone przecinkami lub każdy w nowej linii.</FormDescription>
                       <FormControl>
                         <Textarea rows={3} placeholder={"dostępność cyfrowa\nzarządzanie\nWCAG"} {...field} />
                       </FormControl>
+                      <FormMessage />
                     </FormItem>
                   )} />
+
                 </div>
 
                 <div className="space-y-4">
